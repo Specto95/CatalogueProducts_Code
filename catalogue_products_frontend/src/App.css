@@ -1,0 +1,23 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+:root{
+  --h-FullVh: 100vh;
+  --h-Full: 100%;
+  --w-Full: 100%;
+}
+
+.main{
+  height: var(--h-FullVh);
+  width: var(--w-Full);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-inline: 5%;
+
+}
