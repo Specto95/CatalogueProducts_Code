@@ -1,0 +1,199 @@
+// schema/schema.js
+const { buildSchema } = require("graphql");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { users } = require("../users");
+
+// Secret key for JWT (store securely in production)
+const JWT_SECRET = "supersecretkey123";
+
+const schema = buildSchema(`
+
+  enum Role {
+    ADMIN
+    USER
+  }
+
+  type User {
+    id: ID!
+    email: String!
+    password: String!
+    role: Role!
+  }
+
+  type AuthPayload {
+    message: String!
+    token: String
+    tokenExpiration: Int
+    user: User
+  }
+
+  """ DummyJSON Product model """
+  type Product {
+    id: ID!
+    title: String!
+    description: String!
+    price: Float!
+    discountPercentage: Float
+    rating: Float
+    stock: Int
+    brand: String
+    category: String
+    thumbnail: String
+    images: [String]
+  }
+
+  type ProductsResponse {
+    products: [Product!]!
+    total: Int
+    skip: Int
+    limit: Int
+  }
+
+  input ProductInput {
+    title: String!
+    description: String!
+    price: Float!
+    discountPercentage: Float
+    rating: Float
+    stock: Int
+    brand: String
+    category: String
+    thumbnail: String
+    images: [String]
+  }
+
+  type Query {
+    getProfile(token: String!): User
+    getAllUsers(token: String!): [User]
+
+    listProducts: ProductsResponse
+  }
+
+  type Mutation {
+    register(email: String!, password: String!, role: String!): AuthPayload
+    login(email: String!, password: String!): AuthPayload
+    logout(token: String!): AuthPayload
+
+    createProduct(input: ProductInput!): Product
+    updateProduct(id: ID!, input: ProductInput!): Product
+    deleteProduct(id: ID!): Product
+  }
+`);
+
+const activeTokens = new Set();
+
+const rootValue = {
+  // --- Auth ---
+  register: async ({ email, password, role }) => {
+    const existingUser = users.find((u) => u.email === email);
+    if (existingUser) {
+      throw new Error("Email already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = {
+      id: users.length + 1,
+      email,
+      password: hashedPassword,
+      role: role.toUpperCase() === "ADMIN" ? "ADMIN" : "USER",
+    };
+    users.push(user);
+
+    return {
+      message: "User registered successfully",
+      user,
+    };
+  },
+
+  login: async ({ email, password }) => {
+    const user = users.find((u) => u.email === email);
+    if (!user) throw new Error("User does not exist");
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error("Invalid credentials");
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+    activeTokens.add(token);
+
+    return {
+      message: "Login successful",
+      token,
+      user,
+    };
+  },
+
+  logout: ({ token }) => {
+    if (activeTokens.has(token)) {
+      activeTokens.delete(token);
+      return { message: "Logout successful" };
+    }
+    throw new Error("Invalid or expired token");
+  },
+
+  getProfile: ({ token }) => {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      const user = users.find((u) => u.id === decoded.id);
+      if (!user) throw new Error("User not found");
+      return user;
+    } catch {
+      throw new Error("Unauthorized");
+    }
+  },
+
+  getAllUsers: ({ token }) => {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      if (decoded.role !== "ADMIN")
+        throw new Error("Access denied: ADMIN only");
+      return users.map(({ password, ...rest }) => rest);
+    } catch {
+      throw new Error("Unauthorized");
+    }
+  },
+
+  // --- Product operations ---
+  listProducts: async () => {
+    const response = await fetch("https://dummyjson.com/products");
+    const data = await response.json();
+    return data;
+  },
+
+  createProduct: async ({ input }) => {
+    const response = await fetch("https://dummyjson.com/products/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = await response.json();
+    return data;
+  },
+
+  updateProduct: async ({ id, input }) => {
+    const response = await fetch(`https://dummyjson.com/products/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = await response.json();
+    return data;
+  },
+
+  deleteProduct: async ({ id }) => {
+    const response = await fetch(`https://dummyjson.com/products/${id}`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    return data;
+  },
+};
+
+module.exports = {
+  schema,
+  rootValue,
+};

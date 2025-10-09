@@ -1,0 +1,92 @@
+.CPW__section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+  
+  .CPW__card {
+    flex: 1 1 250px;
+    max-width: 300px;
+  }
+  
+  
+  .CPW__card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 300px;
+    width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .CPW__card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .CPW__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .CPW__info {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .CPW__title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .CPW__description {
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.4;
+    flex-grow: 1;
+  }
+
+  .CPW__priceContainer{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;  
+  }
+
+  .CPW__delete{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--color-delete);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease-in-out;
+  }
+
+  .CPW__delete:hover{
+    transform: scale(1.2);
+  }
+  
+  .CPW__price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #0077cc;
+  }
+  
+  .CPW__category,
+  .CPW__rating,
+  .CPW__stock {
+    font-size: 0.85rem;
+    color: #777;
+  }

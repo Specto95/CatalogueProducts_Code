@@ -1,6 +1,11 @@
-import { useEffect, useState, lazy } from "react";
+import { lazy } from "react";
 import "./App.css";
-import { Route, Routes } from "react-router-dom";
+
+import Navbar from "./components/CatalogueProducts/Navbar/Navbar";
+import { LIST_PRODUCTS } from "./api/query/listProducts";
+import { useQuery } from "@apollo/client/react";
+import type { Products } from "./components/CatalogueProducts/interfaces/api/Products";
+
 
 const CatalogueProductsView = lazy(() =>
   import("./components/CatalogueProducts/CatalogueProductsView").then(
@@ -10,26 +15,21 @@ const CatalogueProductsView = lazy(() =>
   )
 );
 
-const DUMNMYAPI = "https://dummyjson.com/products";
-
 function App() {
-  const [data, setData] = useState(0);
-
-  useEffect(() => {
-    async function fetchData() {
-      const data = await fetch(DUMNMYAPI);
-      const res = await data.json();
-      setData(res.results);
-      console.log(res);
-    }
-
-    fetchData();
-  }, []);
+  const {
+    data: productsData,
+  } = useQuery<{ listProducts: Products }, Record<string, Products>>(
+    LIST_PRODUCTS
+  );
 
   return (
     <>
+      <Navbar />
       <main className="main">
-        <CatalogueProductsView />
+        <CatalogueProductsView
+          products={productsData ? productsData.listProducts.products : []}
+          // setProductsData={setProductsData}
+        />
       </main>
     </>
   );
