@@ -51,16 +51,12 @@ const schema = buildSchema(`
   }
 
   input ProductInput {
+    id: ID
     title: String!
     description: String!
     price: Float!
-    discountPercentage: Float
-    rating: Float
-    stock: Int
-    brand: String
-    category: String
+    category: String!
     thumbnail: String
-    images: [String]
   }
 
   type Query {
@@ -171,6 +167,7 @@ const rootValue = {
       body: JSON.stringify(input),
     });
     const data = await response.json();
+    console.log("Created product:", data);
     return data;
   },
 
@@ -189,6 +186,7 @@ const rootValue = {
       method: "DELETE",
     });
     const data = await response.json();
+    console.log("Deleted product:", data);
     return data;
   },
 };

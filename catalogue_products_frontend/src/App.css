@@ -4,6 +4,14 @@
   padding: 0;
 }
 
+textarea{
+  resize: none;
+}
+
+.customInput{
+  width: 100%;
+  white-space: pre-wrap;
+}
 
 :root{
   --h-FullVh: 100vh;
@@ -16,6 +24,8 @@
   --color-primaryStrong: #1b5884;
   --color-accent: #ff6600;
   --color-delete: #ff4d4d;
+  --color-success: #4BB543;
+  --color-cancel: #9cb8ba;
   --color-whitesmoke: #f5f5f5;
 
 }

@@ -6,13 +6,13 @@
     padding: 1rem;
   }
   
-  .CPW__card {
+  .CPW__card, .CPW__editCard {
     flex: 1 1 250px;
     max-width: 300px;
   }
+
   
-  
-  .CPW__card {
+  .CPW__card, .CPW__editCard {
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -23,10 +23,19 @@
     display: flex;
     flex-direction: column;
   }
+
+  .CPW__card{
+    justify-content: space-between; 
+  }
   
-  .CPW__card:hover {
+
+  .CPW__card:hover, .CPW__editCard:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  .CPW__editCard{
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 1);
   }
   
   .CPW__image {
@@ -55,6 +64,19 @@
     flex-grow: 1;
   }
 
+  .CPW__editDescription{
+    width: 100%;
+  height: 100px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: none;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  }
+
   .CPW__priceContainer{
     position: relative;
     display: flex;
@@ -77,6 +99,23 @@
   .CPW__delete:hover{
     transform: scale(1.2);
   }
+
+  .CPW__edit{
+    position: absolute;
+    bottom: 0;
+    right: 2rem;
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease-in-out;
+  }
+
+  .CPW__edit:hover{
+    transform: scale(1.2);
+  }
+
   
   .CPW__price {
     font-size: 1rem;
@@ -89,4 +128,57 @@
   .CPW__stock {
     font-size: 0.85rem;
     color: #777;
+  }
+
+  /*? CREATE FORM STYLES  */
+
+  .CPW__input, .CPW__inputError, .CPW__inputSuccess{
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-top: .5rem;
+  }
+
+  .CPW__inputError{
+    border: 2px solid var(--color-delete);
+  }
+
+  .CPW__inputSuccess{
+    border: 2px solid var(--color-success);
+  }
+
+  .CPW__btnContainer{
+    display: flex;
+    
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: .5rem;
+  }
+
+  .CPW__submitBtn, .CPW__cancelBtn{
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    width: min(150px, 100%);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    margin-top: .5rem;
+  }
+
+  .CPW__submitBtn:hover{
+    background-color: var(--color-primaryStrong);
+  }
+
+  
+
+  .CPW__cancelBtn{
+    /* border: 2px solid var(--color-primary); */
+    background-color: var(--color-cancel);
+    color: var(--color-primary);
   }

@@ -6,6 +6,7 @@ import App from "./App.tsx";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 import { HttpLink } from "@apollo/client";
+import { ProductsProvider } from "./context/ProductsContext.tsx";
 
 const client = new ApolloClient({
   link: new HttpLink({
@@ -17,7 +18,9 @@ const client = new ApolloClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <ProductsProvider>
+        <App />
+      </ProductsProvider>
     </ApolloProvider>
   </StrictMode>
 );
