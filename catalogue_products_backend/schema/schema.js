@@ -1,10 +1,8 @@
-// schema/schema.js
 const { buildSchema } = require("graphql");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { users } = require("../users");
 
-// Secret key for JWT (store securely in production)
 const JWT_SECRET = "supersecretkey123";
 
 const schema = buildSchema(`
@@ -23,8 +21,16 @@ const schema = buildSchema(`
 
   type AuthPayload {
     message: String!
-    token: String
-    tokenExpiration: Int
+    token: String!
+    user: User
+  }
+
+  type LogoutPayload {
+    message: String!
+  }
+
+  type RegisterPayload {
+    message: String!
     user: User
   }
 
@@ -67,9 +73,9 @@ const schema = buildSchema(`
   }
 
   type Mutation {
-    register(email: String!, password: String!, role: String!): AuthPayload
+    register(email: String!, password: String!, role: String!): RegisterPayload
     login(email: String!, password: String!): AuthPayload
-    logout(token: String!): AuthPayload
+    logout(token: String!): LogoutPayload
 
     createProduct(input: ProductInput!): Product
     updateProduct(id: ID!, input: ProductInput!): Product
@@ -80,7 +86,7 @@ const schema = buildSchema(`
 const activeTokens = new Set();
 
 const rootValue = {
-  // --- Auth ---
+  //? --- Auth ---
   register: async ({ email, password, role }) => {
     const existingUser = users.find((u) => u.email === email);
     if (existingUser) {
@@ -112,7 +118,7 @@ const rootValue = {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       JWT_SECRET,
-      { expiresIn: "2h" }
+      { expiresIn: "1h" }
     );
     activeTokens.add(token);
 
@@ -160,18 +166,28 @@ const rootValue = {
     return data;
   },
 
-  createProduct: async ({ input }) => {
+  createProduct: async ({input}, req) => {
+    if (!req.isAuth || req.user.role !== "ADMIN") {
+      throw new Error("Unauthorized: Admins only");
+    }
+
     const response = await fetch("https://dummyjson.com/products/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
     });
+
     const data = await response.json();
     console.log("Created product:", data);
+
     return data;
   },
 
-  updateProduct: async ({ id, input }) => {
+  updateProduct: async ({ id, input }, req) => {
+    if (!req.isAuth || req.user.role !== "ADMIN") {
+      throw new Error("Unauthorized: Admins only");
+    }
+
     const response = await fetch(`https://dummyjson.com/products/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -181,7 +197,11 @@ const rootValue = {
     return data;
   },
 
-  deleteProduct: async ({ id }) => {
+  deleteProduct: async ({ id }, req) => {
+    if (!req.isAuth || req.user.role !== "ADMIN") {
+      throw new Error("Unauthorized: Admins only");
+    }
+
     const response = await fetch(`https://dummyjson.com/products/${id}`, {
       method: "DELETE",
     });

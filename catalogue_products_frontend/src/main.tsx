@@ -7,6 +7,7 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 import { HttpLink } from "@apollo/client";
 import { ProductsProvider } from "./context/ProductsContext.tsx";
+import { SessionProvider } from "./context/SessionContext.tsx";
 
 const client = new ApolloClient({
   link: new HttpLink({
@@ -18,9 +19,11 @@ const client = new ApolloClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <ProductsProvider>
-        <App />
-      </ProductsProvider>
+      <SessionProvider>
+        <ProductsProvider>
+          <App />
+        </ProductsProvider>
+      </SessionProvider>
     </ApolloProvider>
   </StrictMode>
 );

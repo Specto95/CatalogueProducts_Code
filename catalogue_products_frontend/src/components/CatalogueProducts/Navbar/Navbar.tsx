@@ -4,7 +4,6 @@ import type { NavbarProps } from "./interfaces/Navbar";
 
 export default function Navbar({ username, onLogout }: NavbarProps) {
 
-
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbar__container}>

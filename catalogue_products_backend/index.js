@@ -5,6 +5,8 @@ const cors = require("cors");
 const { graphqlHTTP } = require("express-graphql");
 const { schema, rootValue } = require("./schema/schema");
 
+const isAuth = require("./middlewares/isAuth");
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -12,11 +14,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 
-app.get("/", async (req, res) => {
-  res.send("Welcome to the Catalogue Products Backend API");
-});
-
 const PORT = process.env.PORT || 3000;
+
+
+app.use(isAuth);
 
 app.use(
   "/graphql",

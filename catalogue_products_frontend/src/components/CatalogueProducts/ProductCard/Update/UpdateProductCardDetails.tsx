@@ -22,7 +22,7 @@ export function UpdateProductCardDetails({
     thumbnail: product.thumbnail,
   });
 
-  const [updateProduct] = useMutation(UPDATE_PRODUCT, {
+  const [updateProduct] = useMutation<{ updateProduct: typeof product }>(UPDATE_PRODUCT, {
     onCompleted: (data) => {
       setProducts((prev) =>
         prev.map((pro) => (pro.id === product.id ? data.updateProduct : pro))

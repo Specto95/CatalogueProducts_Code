@@ -9,7 +9,16 @@ import { useMutation } from "@apollo/client/react";
 export function CreateProductCard() {
   const { setProducts, setIsCreating, products } = useProductsProvider();
 
-  const [createProduct] = useMutation(CREATE_PRODUCT, {
+  const [createProduct] = useMutation<{
+    createProduct: {
+      id: number;
+      title: string;
+      description: string;
+      price: number;
+      category: string;
+      thumbnail: string;
+    };
+  }>(CREATE_PRODUCT, {
     onCompleted: (data) => {
       setProducts((prev) => [
         ...prev,
