@@ -2,9 +2,10 @@ import { useFormik } from "formik";
 import styles from "./Login.module.css";
 import { loginSchema } from "./formProps/schema/loginSchema";
 import { useSessionProvider } from "../../../hooks/useSessionProvider";
+import { Navigate } from "react-router-dom";
 
 export function Login() {
-  const { login } = useSessionProvider();
+  const { login, isUserLogged } = useSessionProvider();
 
   const formik = useFormik({
     initialValues: {
@@ -18,6 +19,10 @@ export function Login() {
       resetForm();
     },
   });
+
+  if (isUserLogged) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <section className={styles.login__container}>

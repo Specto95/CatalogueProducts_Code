@@ -5,7 +5,6 @@ import { useProductsProvider } from "../../hooks/useProductsProvider";
 import { CreateProductCardView } from "./ProductCard/Create/CreateProductCardView";
 import { CreateProductCard } from "./ProductCard/Create/CreateProductCard";
 import { useSessionProvider } from "../../hooks/useSessionProvider";
-import { Login } from "../Auth/Login/Login";
 import { UserRole } from "../../context/types/User";
 import { useState } from "react";
 import { MultiFilter } from "./Navbar/Filter/helpers/MultiFilter";
@@ -30,41 +29,41 @@ export function CatalogueProductsView() {
   const productsToShow =
     queryName || queryPriceRange ? filteredProducts : products;
 
-  const { isUserLogged, user } = useSessionProvider();
+  const { user } = useSessionProvider();
 
-  return !isUserLogged ? (
-    <Login />
-  ) : (
-    <div className={styles.CPW__container}>
-      <FilterContainer
-        arrowClicked={arrowClicked}
-        setArrowClicked={setArrowClicked}
-        customDetailsName="Filtros"
-        hideDetailsName="Ocultar filtros"
-        setQueryName={setQueryName}
-        setQueryPriceRange={setQueryPriceRange}
-        minPrice={minPrice}
-        maxPrice={maxPrice}
-        queryName={queryName}
-        queryPriceRange={queryPriceRange}
-      />
-      <div className={styles.CPW__section}>
-        <>
-          {user.role === UserRole.ADMIN ? (
-            isCreating ? (
-              <CreateProductCard />
+  return (
+    <main className="main">
+      <div className={styles.CPW__container}>
+        <FilterContainer
+          arrowClicked={arrowClicked}
+          setArrowClicked={setArrowClicked}
+          customDetailsName="Filtros"
+          hideDetailsName="Ocultar filtros"
+          setQueryName={setQueryName}
+          setQueryPriceRange={setQueryPriceRange}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          queryName={queryName}
+          queryPriceRange={queryPriceRange}
+        />
+        <div className={styles.CPW__section}>
+          <>
+            {user.role === UserRole.ADMIN ? (
+              isCreating ? (
+                <CreateProductCard />
+              ) : (
+                <CreateProductCardView />
+              )
             ) : (
-              <CreateProductCardView />
-            )
-          ) : (
-            <></>
-          )}
+              <></>
+            )}
 
-          {productsToShow?.map((pro) => (
-            <CatalogueProductCard key={pro.id} product={pro} />
-          ))}
-        </>
+            {productsToShow?.map((pro) => (
+              <CatalogueProductCard key={pro.id} product={pro} />
+            ))}
+          </>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

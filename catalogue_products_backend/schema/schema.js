@@ -71,6 +71,7 @@ const schema = buildSchema(`
     getAllUsers(token: String!): [User]
 
     listProducts: ProductsResponse
+    isEmailAvailable(email: String!): Boolean
   }
 
   type Mutation {
@@ -91,7 +92,7 @@ const rootValue = {
   register: async ({ email, password, role }) => {
     const existingUser = users.find((u) => u.email === email);
     if (existingUser) {
-      throw new Error("Email already exists");
+      throw new Error("El correo ya existe");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -104,17 +105,17 @@ const rootValue = {
     users.push(user);
 
     return {
-      message: "User registered successfully",
+      message: "Usuario registrado exitosamente",
       user,
     };
   },
 
   login: async ({ email, password }) => {
     const user = users.find((u) => u.email === email);
-    if (!user) throw new Error("User does not exist");
+    if (!user) throw new Error("Usuario no encontrado");
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) throw new Error("Invalid credentials");
+    if (!isMatch) throw new Error("Contraseña incorrecta");
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
@@ -124,7 +125,7 @@ const rootValue = {
     activeTokens.add(token);
 
     return {
-      message: "Login successful",
+      message: "Inicio de sesión exitoso",
       token,
       user,
     };
@@ -135,7 +136,7 @@ const rootValue = {
       activeTokens.delete(token);
       return { message: "Logout successful" };
     }
-    throw new Error("Invalid or expired token");
+    throw new Error("Token expirado");
   },
 
   isUserAuthenticated: ({ token }) => {
@@ -154,7 +155,7 @@ const rootValue = {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       const user = users.find((u) => u.id === decoded.id);
-      if (!user) throw new Error("User not found");
+      if (!user) throw new Error("Usuario no encontrado");
       return user;
     } catch {
       throw new Error("Unauthorized");
@@ -165,21 +166,28 @@ const rootValue = {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
       if (decoded.role !== "ADMIN")
-        throw new Error("Access denied: ADMIN only");
+        throw new Error("Acceso denegado: Solo administradores");
       return users.map(({ password, ...rest }) => rest);
     } catch {
       throw new Error("Unauthorized");
     }
   },
 
-  // --- Product operations ---
+  // -------------- Product operations ----------------
   listProducts: async () => {
     const response = await fetch("https://dummyjson.com/products");
     const data = await response.json();
     return data;
   },
 
-  createProduct: async ({input}, req) => {
+  isEmailAvailable: ({ email }) => {
+    const user = users.find((u) => u.email === email);
+    return !user;
+  },
+
+  // --- PRODUCT MUTATIONS (Admin only) ---
+
+  createProduct: async ({ input }, req) => {
     if (!req.isAuth || req.user.role !== "ADMIN") {
       throw new Error("Unauthorized: Admins only");
     }

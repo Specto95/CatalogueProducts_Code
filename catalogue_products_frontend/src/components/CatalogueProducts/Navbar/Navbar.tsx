@@ -1,35 +1,53 @@
-import { FiLogOut } from "react-icons/fi";
 import styles from "./Navbar.module.css";
 import { useSessionProvider } from "../../../hooks/useSessionProvider";
 import { spanishRoles } from "./helpers/traslateRoles";
+import { IoIosOptions } from "react-icons/io";
+import { useState } from "react";
+import { RoleSettings } from "./Role/Settings/RoleSettings";
+
+import { useLocation } from "react-router-dom";
 
 export function Navbar() {
-  const { isUserLogged, user, logout } = useSessionProvider();
+  const { isUserLogged, user } = useSessionProvider();
+  const [isOpenOptions, setIsOpenOptions] = useState(false);
+
+  const location = useLocation();
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbar__container}>
         <h1 className={styles.navbar__logo}>CatalogueProducts</h1>
 
-        <div className={styles.navbar__user}>
-          {isUserLogged ? (
-            <>
-              <span className={styles.navbar__username}>
-                {user.email} |{" "}
-                {
-                  spanishRoles[
-                    user.role as unknown as keyof typeof spanishRoles
-                  ]
-                }
-              </span>
-              <button className={styles.navbar__logout} onClick={logout}>
-                <FiLogOut size={20} />
-              </button>
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
+        {location.pathname !== "/" ? (
+          <></>
+        ) : (
+          <div className={styles.navbar__user}>
+            {isUserLogged ? (
+              <>
+                <span className={styles.navbar__username}>
+                  {user.email} |{" "}
+                  {
+                    spanishRoles[
+                      user.role as unknown as keyof typeof spanishRoles
+                    ]
+                  }
+                </span>
+
+                <IoIosOptions
+                  size={30}
+                  className={styles.navbar__options_icon}
+                  onClick={() => setIsOpenOptions(!isOpenOptions)}
+                />
+
+                {isOpenOptions && (
+                  <RoleSettings setIsOpenOptions={setIsOpenOptions} />
+                )}
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );
