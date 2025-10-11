@@ -5,14 +5,15 @@ import { useMutation } from "@apollo/client/react";
 import { useProductsProvider } from "../../../../hooks/useProductsProvider";
 import { UPDATE_PRODUCT } from "../../../../api/mutation/updateProduct";
 import { useState } from "react";
-// import { useFormik } from "formik";
-// import { productSchema } from "../Create/formProps/schema/productSchema";
+import { useSessionProvider } from "../../../../hooks/useSessionProvider";
+import { UserRole } from "../../../../context/types/User";
 
 export function UpdateProductCardDetails({
   product,
   setIsUpdatingProduct,
 }: ListProductCardDetailsProps) {
   const { setProducts } = useProductsProvider();
+  const { user } = useSessionProvider();
 
   const [editedProduct, setEditedProduct] = useState({
     title: product.title,
@@ -22,13 +23,16 @@ export function UpdateProductCardDetails({
     thumbnail: product.thumbnail,
   });
 
-  const [updateProduct] = useMutation<{ updateProduct: typeof product }>(UPDATE_PRODUCT, {
-    onCompleted: (data) => {
-      setProducts((prev) =>
-        prev.map((pro) => (pro.id === product.id ? data.updateProduct : pro))
-      );
-    },
-  });
+  const [updateProduct] = useMutation<{ updateProduct: typeof product }>(
+    UPDATE_PRODUCT,
+    {
+      onCompleted: (data) => {
+        setProducts((prev) =>
+          prev.map((pro) => (pro.id === product.id ? data.updateProduct : pro))
+        );
+      },
+    }
+  );
 
   const handleSave = () => {
     updateProduct({
@@ -47,21 +51,12 @@ export function UpdateProductCardDetails({
     setIsUpdatingProduct(false);
   };
 
-  // const formik = useFormik({
-  //   initialValues: {...editedProduct},
-  //   validationSchema: productSchema,
-  //   onSubmit: async (values, { resetForm }) => {
-  //     handleCreate(values);
-  //     resetForm();
-  //     alert("Producto creado con éxito!");
-  //     setIsCreating!(false);
-  //   },
-  // });
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        if (user.role !== UserRole.ADMIN) return;
         handleSave();
       }}
     >
@@ -72,17 +67,17 @@ export function UpdateProductCardDetails({
           setEditedProduct((prev) => ({ ...prev, title: e.target.value }))
         }
       />
-        <input
-          type="text"
-          className={styles.CPW__input}
-          value={editedProduct.description}
-          onChange={(e) =>
-            setEditedProduct((prev) => ({
-              ...prev,
-              description: e.target.value,
-            }))
-          }
-        />
+      <input
+        type="text"
+        className={styles.CPW__input}
+        value={editedProduct.description}
+        onChange={(e) =>
+          setEditedProduct((prev) => ({
+            ...prev,
+            description: e.target.value,
+          }))
+        }
+      />
       <div className={styles.CPW__priceContainer}>
         <MdOutlineDone className={styles.CPW__edit} onClick={handleSave} />
         <MdCancel

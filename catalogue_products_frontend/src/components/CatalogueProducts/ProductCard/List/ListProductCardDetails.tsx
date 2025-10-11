@@ -6,12 +6,15 @@ import { handleDelete } from "../../helpers/functions";
 import { useMutation } from "@apollo/client/react";
 import { DELETE_PRODUCT } from "../../../../api/mutation/deleteProduct";
 import { useProductsProvider } from "../../../../hooks/useProductsProvider";
+import { useSessionProvider } from "../../../../hooks/useSessionProvider";
+import { UserRole } from "../../../../context/types/User";
 
 export function ListProductCardDetails({
   product,
   setIsUpdatingProduct,
 }: ListProductCardDetailsProps) {
   const { setProducts } = useProductsProvider();
+  const { user } = useSessionProvider();
 
   const [deleteProduct] = useMutation(DELETE_PRODUCT, {
     variables: { id: product.id },
@@ -26,16 +29,22 @@ export function ListProductCardDetails({
       <h3 className={styles.CPW__title}>{product.title}</h3>
       <p className={styles.CPW__description}>{product.description}</p>
       <div className={styles.CPW__priceContainer}>
-        <MdDelete
-          className={styles.CPW__delete}
-          onClick={() => handleDelete(product, deleteProduct)}
-        />
-        <FaEdit
-          className={styles.CPW__edit}
-          onClick={() => {
-            setIsUpdatingProduct(true);
-          }}
-        />
+        {user.role === UserRole.ADMIN ? (
+          <>
+            <MdDelete
+              className={styles.CPW__delete}
+              onClick={() => handleDelete(product, deleteProduct)}
+            />
+            <FaEdit
+              className={styles.CPW__edit}
+              onClick={() => {
+                setIsUpdatingProduct(true);
+              }}
+            />
+          </>
+        ) : (
+          <></>
+        )}
         <p className={styles.CPW__price}>${product.price}</p>
         <p className={styles.CPW__category}>Category: {product.category}</p>
         <p className={styles.CPW__rating}>Rating: {product.rating} / 5</p>

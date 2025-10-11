@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import "./App.css";
 
-import Navbar from "./components/CatalogueProducts/Navbar/Navbar";
+import {Navbar} from "./components/CatalogueProducts/Navbar/Navbar";
 
 const CatalogueProductsView = lazy(() =>
   import("./components/CatalogueProducts/CatalogueProductsView").then(

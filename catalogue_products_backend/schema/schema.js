@@ -67,6 +67,7 @@ const schema = buildSchema(`
 
   type Query {
     getProfile(token: String!): User
+    isUserAuthenticated(token: String!): Boolean
     getAllUsers(token: String!): [User]
 
     listProducts: ProductsResponse
@@ -135,6 +136,18 @@ const rootValue = {
       return { message: "Logout successful" };
     }
     throw new Error("Invalid or expired token");
+  },
+
+  isUserAuthenticated: ({ token }) => {
+    if (!token) return false;
+    if (!activeTokens.has(token)) return false;
+
+    try {
+      jwt.verify(token, JWT_SECRET);
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   getProfile: ({ token }) => {

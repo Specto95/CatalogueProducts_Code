@@ -5,9 +5,12 @@ import { productSchema } from "./formProps/schema/productSchema";
 
 import { CREATE_PRODUCT } from "../../../../api/mutation/createProduct";
 import { useMutation } from "@apollo/client/react";
+import { useSessionProvider } from "../../../../hooks/useSessionProvider";
+import { UserRole } from "../../../../context/types/User";
 
 export function CreateProductCard() {
   const { setProducts, setIsCreating, products } = useProductsProvider();
+  const { user } = useSessionProvider();
 
   const [createProduct] = useMutation<{
     createProduct: {
@@ -62,6 +65,7 @@ export function CreateProductCard() {
     },
     validationSchema: productSchema,
     onSubmit: async (values, { resetForm }) => {
+      if (user.role !== UserRole.ADMIN) return;
       handleCreate(values);
       resetForm();
       alert("Producto creado con éxito!");
