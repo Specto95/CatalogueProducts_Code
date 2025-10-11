@@ -28,6 +28,28 @@ textarea{
   --color-cancel: #9cb8ba;
   --color-whitesmoke: #f5f5f5;
 
+  /* BACKGROUNDS */
+
+  --bg-primary: #b3daff;
+
+  /* FONTS */
+
+  --fs-main: 2rem;
+  --fs-xxl: 1.5rem;
+  --fs-xl: 1.25rem;
+
+}
+
+h1{
+  font-size: clamp(1rem, 8vw, var(--fs-main)) !important;
+}
+
+h2{
+  font-size: clamp(1rem, 7vw, var(--fs-xxl)) !important;
+}
+
+h3{
+  font-size: clamp(.8rem, 6vw, var(--fs-xl)) !important;
 }
 
 .main{
@@ -55,4 +77,16 @@ textarea{
 
 .inputSuccess{
   border: 2px solid var(--color-success);
+}
+
+.flexColumn{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.flex__spacingMY{
+  display: flex;
+  gap: 1rem;
+  margin-block: 1rem;
 }

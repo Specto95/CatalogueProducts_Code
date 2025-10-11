@@ -1,4 +1,12 @@
+.CPW__container{
+    /* background-color: var(--bg-secondary); */
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+    width: 100%;
+}
+
 .CPW__section {
+    background-color: var(--bg-primary);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -181,4 +189,10 @@
     /* border: 2px solid var(--color-primary); */
     background-color: var(--color-cancel);
     color: var(--color-primary);
+  }
+
+  .slider{
+    width: 100%;
+    accent-color: var(--color-primary);
+
   }

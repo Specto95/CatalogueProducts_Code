@@ -1,0 +1,59 @@
+.filter__container{
+    
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--2rem);
+    align-items: center;
+    padding: 1.2rem;
+    background-color: var(--color-primaryStrong);
+    justify-content: space-between;
+    color: var(--color-whitesmoke);
+    margin-top: 1rem;
+    max-width: var(--w-full);
+}
+
+.filter__text{
+    display: block;
+    flex-basis: 25%;
+}
+
+.filter__click{
+    cursor: pointer;
+}
+
+.filter__img{
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 15px;
+    color: white;
+}
+
+.filter__children {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid var(--color-primaryStrong);
+    transition-duration: 300ms;
+    transition-property: opacity, max-height, padding;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    padding: 0;
+  }
+  
+  .filter__children.isVisible {
+    max-height: 1000px; /* Large enough to fit content dynamically */
+    opacity: 1;
+    padding: 1rem; /* Add padding for visible state */
+  }
+
+.filter__inputRange{
+    width: min(60vw, 100%);
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-top: .5rem;
+}

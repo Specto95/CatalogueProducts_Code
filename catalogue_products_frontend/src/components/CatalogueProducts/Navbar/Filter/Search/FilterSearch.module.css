@@ -1,0 +1,26 @@
+.filter__container{
+    position: relative;
+    width: min(300px, 100%);
+}
+
+.filter__input{
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-top: .5rem;
+}
+
+.filter__input::placeholder{
+    color: var(--text-secondary);
+}
+
+.filter__searchWhiteIcon{
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    color: var(--text-primary);
+    font-size: var(--fs-xl);
+    cursor: pointer;
+}

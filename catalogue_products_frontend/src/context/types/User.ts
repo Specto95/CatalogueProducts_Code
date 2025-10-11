@@ -1,6 +1,7 @@
 export enum UserRole {
-    ADMIN,
-    USER,
+    ADMIN = "ADMIN",
+    USER = "USER",
+    NONE = "NONE"
 }
 
 export type User = {

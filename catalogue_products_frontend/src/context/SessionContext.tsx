@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import type { User } from "./types/User";
+import { UserRole, type User } from "./types/User";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { IS_USER_AUTHENTICATED } from "./api/isUserAuthenticated";
 import { LOGIN } from "./api/login";
@@ -28,7 +28,7 @@ export const SessionProvider = ({
 }) => {
   const [user, setUser] = useState<UserRoleEmail>({
     email: "",
-    role: 0,
+    role: UserRole.NONE,
   });
   const token = Cookies.get("token");
 
@@ -52,13 +52,12 @@ export const SessionProvider = ({
 
   const logout = async () => {
     try {
-      const { data } = await logoutMutation({
+      await logoutMutation({
         variables: { token: token ?? Cookies.get("token") ?? "" },
       });
       setUser({} as User);
       localStorage.removeItem("user");
       Cookies.remove("token");
-      alert(data?.logout.message);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -80,8 +79,6 @@ export const SessionProvider = ({
           expires: 1,
           secure: true,
         });
-
-        alert(data.login.message);
       }
     } catch (error) {
       if (error instanceof Error) {
