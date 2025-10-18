@@ -58,11 +58,13 @@ Frontend
 
 🎨 CSS Modules
 
+📡 Apollo Client (graphQL)
+
 Backend
 
 🟢 Node.js
 
-🚀 Express
+🧠 graphQL
 
 🔐 JWT (Authentication)
 
