@@ -52,6 +52,9 @@ export const SessionProvider = ({
 
   const logout = async () => {
     try {
+      if (!token || !Cookies.get("token")) {
+        throw new Error("No token found");
+      }
       await logoutMutation({
         variables: { token: token ?? Cookies.get("token") ?? "" },
       });

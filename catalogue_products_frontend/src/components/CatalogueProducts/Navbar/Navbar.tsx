@@ -3,7 +3,7 @@ import { useSessionProvider } from "../../../hooks/useSessionProvider";
 import { spanishRoles } from "./helpers/traslateRoles";
 import { IoIosOptions } from "react-icons/io";
 import { useState } from "react";
-import { RoleSettings } from "./Role/Settings/RoleSettings";
+import { Sidebar } from "./Role/Settings/Sidebar";
 
 import { useLocation } from "react-router-dom";
 
@@ -40,7 +40,7 @@ export function Navbar() {
                 />
 
                 {isOpenOptions && (
-                  <RoleSettings setIsOpenOptions={setIsOpenOptions} />
+                  <Sidebar setIsOpenOptions={setIsOpenOptions} />
                 )}
               </>
             ) : (

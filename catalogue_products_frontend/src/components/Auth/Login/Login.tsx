@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import styles from "./Login.module.css";
 import { loginSchema } from "./formProps/schema/loginSchema";
 import { useSessionProvider } from "../../../hooks/useSessionProvider";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 
 export function Login() {
   const { login, isUserLogged } = useSessionProvider();
@@ -48,6 +48,10 @@ export function Login() {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
+
+        <Link to="/forgot-password" className={styles.login__forgotPassword}>
+          ¿Olvidaste tu contraseña?
+        </Link>
         <button type="submit" className={styles.login__btnLogin}>
           Ingresar
         </button>

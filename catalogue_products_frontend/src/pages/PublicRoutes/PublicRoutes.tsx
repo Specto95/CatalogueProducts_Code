@@ -1,12 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useSessionProvider } from "../../hooks/useSessionProvider";
 
-export function ProtectedRoute() {
+export function PublicRoute() {
   const { isUserLogged } = useSessionProvider();
 
-  return isUserLogged ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" />
-  );
+  return isUserLogged ? <Navigate to="/" replace /> : <Outlet />;
 }

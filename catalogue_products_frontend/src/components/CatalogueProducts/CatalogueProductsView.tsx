@@ -18,7 +18,8 @@ export function CatalogueProductsView() {
     0, 0,
   ]);
 
-  const maxPrice = Math.max(...products.map((pro) => pro.price));
+  const maxPrice = Math.ceil(Math.max(...products.map((p) => p.price)));
+
   const minPrice = Math.min(...products.map((pro) => pro.price));
 
   const { filteredItems: filteredProducts } = MultiFilter(products, [

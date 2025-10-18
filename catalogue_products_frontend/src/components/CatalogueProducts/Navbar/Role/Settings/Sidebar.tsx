@@ -1,14 +1,15 @@
 import { FiLogOut } from "react-icons/fi";
 import { HiUserAdd } from "react-icons/hi";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 import { useNavigate } from "react-router-dom";
 
-import styles from "./RoleSettings.module.css";
+import styles from "./Sidebar.module.css";
 import { useSessionProvider } from "../../../../../hooks/useSessionProvider";
 import type { RoleSettingsProps } from "./interfaces/RoleSettings";
 import { UserRole } from "../../../../../context/types/User";
 
-export function RoleSettings({ setIsOpenOptions }: RoleSettingsProps) {
+export function Sidebar({ setIsOpenOptions }: RoleSettingsProps) {
   const { user, logout } = useSessionProvider();
   const navigate = useNavigate();
 
@@ -38,6 +39,19 @@ export function RoleSettings({ setIsOpenOptions }: RoleSettingsProps) {
             />
           </div>
         )}
+
+        <div className="flex__spacingBetween">
+          <p>Cambiar contraseña:</p>
+          <RiLockPasswordLine
+            size={35}
+            className={styles.sidebar__addRoleIcon}
+            onClick={() => {
+              navigate("/change-password");
+              setIsOpenOptions(false);
+            }}
+          />
+        </div>
+
         <p>
           <strong>Email:</strong> {user.email}
         </p>

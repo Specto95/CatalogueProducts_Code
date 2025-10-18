@@ -35,14 +35,25 @@ export function CreateRole() {
     },
     validationSchema: createRoleSchema,
     onSubmit: async (values, { resetForm }) => {
-      await handleRegister({
-        email: values.email,
-        password: values.password,
-        role: values.role,
-      });
-      alert("Usuario creado con éxito");
-      navigate(-1);
-      resetForm();
+      try {
+        await handleRegister({
+          email: values.email,
+          password: values.password,
+          role: values.role,
+        });
+        alert("Usuario creado con éxito");
+        navigate(-1);
+        resetForm();
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          alert(e.message);
+        } else {
+          alert("An unknown error occurred");
+        }
+        navigate(-1);
+      } finally {
+        resetForm();
+      }
     },
   });
 

@@ -52,6 +52,10 @@ textarea{
   resize: none;
 }
 
+#root{
+  height: var(--h-FullVh);
+}
+
 /* CLASSES */
 .customInput{
   width: 100%;
@@ -116,6 +120,8 @@ textarea{
 
 .errorMessage{
   color: var(--color-delete);
+  width: 100%;
   font-size: .85rem;
   font-weight: 600;
+  text-align: left;
 }

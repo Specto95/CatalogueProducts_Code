@@ -2,6 +2,7 @@ const { buildSchema } = require("graphql");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { users } = require("../users");
+const crypto = require("crypto");
 
 const JWT_SECRET = "supersecretkey123";
 
@@ -27,6 +28,21 @@ const schema = buildSchema(`
 
   type LogoutPayload {
     message: String!
+  }
+
+  type ForgotPasswordPayload {
+    message: String!
+    user: User
+  }
+
+  type ChangePasswordPayload {
+    message: String!
+    user: User
+  }
+
+  type ResetPasswordPayload {
+    message: String!
+    user: User
   }
 
   type RegisterPayload {
@@ -72,12 +88,16 @@ const schema = buildSchema(`
 
     listProducts: ProductsResponse
     isEmailAvailable(email: String!): Boolean
+    isRegisteredEmail(email: String!): Boolean
   }
 
   type Mutation {
     register(email: String!, password: String!, role: String!): RegisterPayload
     login(email: String!, password: String!): AuthPayload
     logout(token: String!): LogoutPayload
+    changePassword(email: String!, oldPassword: String!, newPassword: String!): ChangePasswordPayload
+    forgotPassword(email: String!): ForgotPasswordPayload
+    resetPassword(email: String!, newPassword: String!): ResetPasswordPayload
 
     createProduct(input: ProductInput!): Product
     updateProduct(id: ID!, input: ProductInput!): Product
@@ -139,6 +159,54 @@ const rootValue = {
     throw new Error("Token expirado");
   },
 
+  forgotPassword: async ({ email }) => {
+    const user = users.find((u) => u.email === email);
+
+    if (!user) throw new Error("Usuario no encontrado");
+
+    const confirmationCode = crypto
+      .randomBytes(3)
+      .toString("hex")
+      .toUpperCase();
+
+    user.resetCode = confirmationCode;
+
+    return {
+      message:
+        "Instrucciones para restablecer la contraseña enviadas al correo",
+      user,
+    };
+  },
+
+  changePassword: ({ email, oldPassword, newPassword }) => {
+    const user = users.find((u) => u.email === email);
+    if (!user) throw new Error("Usuario no encontrado");
+
+    const isMatch = bcrypt.compareSync(oldPassword, user.password);
+    if (!isMatch) throw new Error("Contraseña antigua incorrecta");
+
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    user.password = hashedPassword;
+
+    return {
+      message: "Contraseña cambiada exitosamente",
+      user,
+    };
+  },
+
+  resetPassword: ({ email, newPassword }) => {
+    const user = users.find((u) => u.email === email);
+    if (!user) throw new Error("Usuario no encontrado");
+
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    user.password = hashedPassword;
+
+    return {
+      message: "Contraseña restablecida exitosamente",
+      user,
+    };
+  },
+
   isUserAuthenticated: ({ token }) => {
     if (!token) return false;
     if (!activeTokens.has(token)) return false;
@@ -183,6 +251,11 @@ const rootValue = {
   isEmailAvailable: ({ email }) => {
     const user = users.find((u) => u.email === email);
     return !user;
+  },
+
+  isRegisteredEmail: ({ email }) => {
+    const user = users.find((u) => u.email === email);
+    return !!user;
   },
 
   // --- PRODUCT MUTATIONS (Admin only) ---

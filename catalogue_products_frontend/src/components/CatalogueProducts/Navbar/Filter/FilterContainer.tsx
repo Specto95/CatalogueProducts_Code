@@ -34,8 +34,9 @@ export function FilterContainer({
       <label>Precio mínimo: {queryPriceRange[0]}</label>
       <input
         type="range"
-        min={minPrice}
-        max={maxPrice}
+        min={Math.floor(minPrice)}
+        max={Math.ceil(maxPrice)}
+        step={1}
         value={queryPriceRange[0]}
         onChange={(e) =>
           setQueryPriceRange([Number(e.target.value), queryPriceRange[1]])
@@ -46,8 +47,9 @@ export function FilterContainer({
       <label>Precio máximo: {queryPriceRange[1]}</label>
       <input
         type="range"
-        min={minPrice}
-        max={maxPrice}
+        min={Math.floor(minPrice)}
+        max={Math.ceil(maxPrice)}
+        step={1}
         value={queryPriceRange[1]}
         onChange={(e) =>
           setQueryPriceRange([queryPriceRange[0], Number(e.target.value)])
