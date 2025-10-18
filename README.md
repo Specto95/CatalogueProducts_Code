@@ -64,6 +64,8 @@ Backend
 
 🟢 Node.js
 
+🟩 Express.js
+
 🧠 graphQL
 
 🔐 JWT (Authentication)
