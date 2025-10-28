@@ -1,21 +1,23 @@
 import { MdCancel, MdOutlineDone } from "react-icons/md";
 import styles from "../../CatalogueProducts.module.css";
 import type { ListProductCardDetailsProps } from "../List/interfaces/ListProductCardDetails";
-import { useMutation } from "@apollo/client/react";
+// import { useMutation } from "@apollo/client/react";
 import { useProductsProvider } from "../../../../hooks/useProductsProvider";
-import { UPDATE_PRODUCT } from "../../../../api/mutation/updateProduct";
+// import { UPDATE_PRODUCT } from "../../../../api/mutation/updateProduct";
 import { useState } from "react";
 import { useSessionProvider } from "../../../../hooks/useSessionProvider";
 import { UserRole } from "../../../../context/types/User";
+import { PRODUCT_API } from "../../../../context/helpers/api";
 
 export function UpdateProductCardDetails({
   product,
   setIsUpdatingProduct,
 }: ListProductCardDetailsProps) {
   const { setProducts } = useProductsProvider();
-  const { user } = useSessionProvider();
+  const { user, token } = useSessionProvider();
 
   const [editedProduct, setEditedProduct] = useState({
+    id: product.id,
     title: product.title,
     description: product.description,
     price: product.price,
@@ -23,34 +25,36 @@ export function UpdateProductCardDetails({
     thumbnail: product.thumbnail,
   });
 
-  const [updateProduct] = useMutation<{ updateProduct: typeof product }>(
-    UPDATE_PRODUCT,
-    {
-      onCompleted: (data) => {
-        setProducts((prev) =>
-          prev.map((pro) => (pro.id === product.id ? data.updateProduct : pro))
-        );
-      },
-    }
-  );
+  const handleSave = async () => {
+    const data = {
+      title: editedProduct.title,
+      description: editedProduct.description,
+      price: editedProduct.price,
+      category: editedProduct.category,
+      thumbnail: product.thumbnail,
+    };
 
-  const handleSave = () => {
-    updateProduct({
-      variables: {
-        id: product.id,
-        input: {
-          title: editedProduct.title,
-          description: editedProduct.description,
-          price: editedProduct.price,
-          category: editedProduct.category,
-          thumbnail: product.thumbnail,
-        },
+    await fetch(PRODUCT_API.UPDATE_PRODUCT(editedProduct.id), {
+      method: "PATCH",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     });
+    setProducts((prev) =>
+      prev.map((pro) =>
+        pro.id === product.id
+          ? {
+              id: product.id,
+              ...data,
+            }
+          : pro
+      )
+    );
 
     setIsUpdatingProduct(false);
   };
-
 
   return (
     <form

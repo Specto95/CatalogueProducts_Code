@@ -2,35 +2,37 @@ import { useFormik } from "formik";
 import styles from "./ChangePassword.module.css";
 import { changePasswordSchema } from "./formProps/schema/changePasswordSchema";
 
-import { useMutation } from "@apollo/client/react";
-import { CHANGE_PASSWORD } from "./api/mutation/changePassword";
+// import { useMutation } from "@apollo/client/react";
+// import { CHANGE_PASSWORD } from "./api/mutation/changePassword";
 
 import { useNavigate } from "react-router-dom";
 import { useSessionProvider } from "../../hooks/useSessionProvider";
+import { AUTH_API } from "../../context/helpers/api";
 
 export function ChangePassword() {
-  const [changePassword] = useMutation<
-    { changePassword: { message: string } },
-    { email: string; oldPassword: string; newPassword: string }
-  >(CHANGE_PASSWORD);
   const navigate = useNavigate();
 
-  const { user, logout } = useSessionProvider();
+  const { user, logout, token } = useSessionProvider();
 
-  const handleChangePassword = (values: {
+  const handleChangePassword = async (values: {
     email: string;
     oldPassword: string;
     newPassword: string;
+    confirmNewPassword: string;
   }) => {
-    changePassword({
-      variables: {
+    await fetch(AUTH_API.CHANGE_PASSWORD, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
         email: values.email,
         oldPassword: values.oldPassword,
         newPassword: values.newPassword,
-      },
+        confirmNewPassword: values.confirmNewPassword,
+      }),
     });
-
-    return changePassword;
   };
 
   const formik = useFormik({
@@ -39,17 +41,18 @@ export function ChangePassword() {
       newPassword: "",
       confirmNewPassword: "",
     },
-    validationSchema: changePasswordSchema,
+    validationSchema: changePasswordSchema(user.email, token!),
     onSubmit: async (values, { resetForm }) => {
       try {
         await handleChangePassword({
           email: user.email,
           oldPassword: values.oldPassword,
           newPassword: values.newPassword,
+          confirmNewPassword: values.confirmNewPassword,
         });
         alert("Contraseña cambiada con éxito");
         resetForm();
-        await logout();
+        logout();
       } catch (e: unknown) {
         if (e instanceof Error) {
           alert(e.message);

@@ -14,9 +14,14 @@ export function Login() {
     },
     validationSchema: loginSchema,
     onSubmit: async (values, { resetForm }) => {
-      await login(values.email, values.password);
+      try{
+        await login(values.email, values.password);
 
-      resetForm();
+        resetForm();
+      }catch(error){
+        console.log(error)
+      }
+
     },
   });
 

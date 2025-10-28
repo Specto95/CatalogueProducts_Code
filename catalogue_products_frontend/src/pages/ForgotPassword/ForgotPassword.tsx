@@ -2,26 +2,25 @@ import { useFormik } from "formik";
 import styles from "./ForgotPassword.module.css";
 import { forgotPasswordSchema } from "./formProps/schema/forgotPasswordSchema";
 
-import { useMutation } from "@apollo/client/react";
-import { FORGOT_PASSWORD } from "./api/mutation/forgotPassword";
+// import { useMutation } from "@apollo/client/react";
+// import { FORGOT_PASSWORD } from "./api/mutation/forgotPassword";
 
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { AUTH_API } from "../../context/helpers/api";
 
 export function ForgotPassword() {
-  const [forgotPassword] = useMutation<
-    { forgotPassword: { message: string } },
-    { email: string }
-  >(FORGOT_PASSWORD);
   const navigate = useNavigate();
   const [messageInstructions, setMessageInstructions] = useState<string>("");
 
-  const handleForgotPassword = (values: { email: string }) => {
-    forgotPassword({
-      variables: {
-        email: values.email,
-      },
-    });
+  const handleForgotPassword = async (values: { email: string }) => {
+    const forgotPasswordData = await fetch(
+      AUTH_API.FORGOT_PASSWORD, {
+        method: 'POST',
+        body: JSON.stringify(values)
+      }
+    )
+    return forgotPasswordData;
   };
 
   const formik = useFormik({

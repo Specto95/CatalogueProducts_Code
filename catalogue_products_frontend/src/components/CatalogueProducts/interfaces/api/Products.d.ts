@@ -3,6 +3,7 @@ export interface Products {
     total:    number;
     skip:     number;
     limit:    number;
+    message: Error;
 }
 
 export interface Product {
@@ -28,6 +29,7 @@ export interface Product {
     meta?:                 Meta;
     thumbnail?:            string;
     images?:               string[];
+    total?: number;
 }
 
 export interface Dimensions {

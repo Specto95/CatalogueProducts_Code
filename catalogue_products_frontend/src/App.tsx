@@ -68,7 +68,7 @@ function App() {
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<CatalogueProductsView />} />
-          <Route path="/register" element={<CreateRole />} />
+          <Route path="/create-role" element={<CreateRole />} />
           <Route path="/change-password" element={<ChangePassword />} />
         </Route>
 

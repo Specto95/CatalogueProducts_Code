@@ -1,155 +1,178 @@
-import { useFormik } from "formik";
+import { Form, Formik } from "formik";
 import styles from "./CreateRole.module.css";
 import { createRoleSchema } from "./formProps/schema/createRoleSchema";
 
-import { useMutation } from "@apollo/client/react";
-import { REGISTER } from "./api/mutation/register";
+// import { useMutation } from "@apollo/client/react";
+// import { REGISTER } from "./api/mutation/register";
 import { UserRole } from "../../../context/types/User";
 
 import { useNavigate } from "react-router-dom";
+import { AUTH_API } from "../../../context/helpers/api";
+import { useSessionProvider } from "../../../hooks/useSessionProvider";
 
 export function CreateRole() {
-  const [register] = useMutation(REGISTER);
+  // const [register] = useMutation(REGISTER);
+
+  const { token } = useSessionProvider();
   const navigate = useNavigate();
 
-  const handleRegister = (values: {
+
+  const handleRegister = async (values: {
     email: string;
     password: string;
     role: string;
   }) => {
-    register({
-      variables: {
-        email: values.email,
-        password: values.password,
-        role: values.role,
+    const data = {
+      email: values.email,
+      password: values.password,
+      role: values.role,
+    };
+    await fetch(AUTH_API.REGISTER, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
+      body: JSON.stringify(data),
     });
   };
 
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "USER",
-    },
-    validationSchema: createRoleSchema,
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        await handleRegister({
-          email: values.email,
-          password: values.password,
-          role: values.role,
-        });
-        alert("Usuario creado con éxito");
-        navigate(-1);
-        resetForm();
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          alert(e.message);
-        } else {
-          alert("An unknown error occurred");
-        }
-        navigate(-1);
-      } finally {
-        resetForm();
-      }
-    },
-  });
-
   return (
-    <section className={styles.createRole__container}>
-      <h1>Crear Rol</h1>
-      <form className={styles.createRole__form} onSubmit={formik.handleSubmit}>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email:"
-          className={
-            formik.touched.email && formik.errors.email
-              ? "inputError"
-              : formik.touched.email && !formik.errors.email
-              ? "inputSuccess"
-              : styles.createRole__input
+    <Formik
+      initialValues={{
+        email: "",
+        password: "",
+        confirmPassword: "",
+        role: "USER",
+      }}
+      validationSchema={createRoleSchema(token!)}
+      onSubmit={async (values, { resetForm }) => {
+        try {
+          await handleRegister({
+            email: values.email,
+            password: values.password,
+            role: values.role,
+          });
+          alert("Usuario creado con éxito");
+          navigate(-1);
+          resetForm();
+        } catch (e: unknown) {
+          if (e instanceof Error) {
+            alert(e.message);
+          } else {
+            alert("An unknown error occurred");
           }
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
+          navigate(-1);
+        } finally {
+          resetForm();
+        }
+      }}
+    >
+      {({
+        touched,
+        errors,
+        handleSubmit,
+        values,
+        handleChange,
+        handleBlur,
+      }) => (
+        <section className={styles.createRole__container}>
+          <h1>Crear Rol</h1>
+          <Form className={styles.createRole__form} onSubmit={handleSubmit}>
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email:"
+              className={
+                touched.email && errors.email
+                  ? "inputError"
+                  : touched.email && !errors.email
+                  ? "inputSuccess"
+                  : styles.createRole__input
+              }
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
 
-        {formik.touched.email && formik.errors.email ? (
-          <div className="errorMessage">{formik.errors.email}</div>
-        ) : null}
+            {touched.email && errors.email ? (
+              <div className="errorMessage">{errors.email}</div>
+            ) : null}
 
-        <label htmlFor="password">Contraseña</label>
-        <input
-          type="password"
-          name="password"
-          placeholder="Contraseña:"
-          className={
-            formik.touched.password && formik.errors.password
-              ? "inputError"
-              : formik.touched.password && !formik.errors.password
-              ? "inputSuccess"
-              : styles.createRole__input
-          }
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña:"
+              className={
+                touched.password && errors.password
+                  ? "inputError"
+                  : touched.password && !errors.password
+                  ? "inputSuccess"
+                  : styles.createRole__input
+              }
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
 
-        {formik.touched.password && formik.errors.password ? (
-          <div className="errorMessage">{formik.errors.password}</div>
-        ) : null}
+            {touched.password && errors.password ? (
+              <div className="errorMessage">{errors.password}</div>
+            ) : null}
 
-        <label htmlFor="confirmPassword">Confirmar Contraseña</label>
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirmar Contraseña:"
-          className={
-            formik.touched.confirmPassword && formik.errors.confirmPassword
-              ? "inputError"
-              : formik.touched.confirmPassword && !formik.errors.confirmPassword
-              ? "inputSuccess"
-              : styles.createRole__input
-          }
-          value={formik.values.confirmPassword}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
+            <label htmlFor="confirmPassword">Confirmar Contraseña</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirmar Contraseña:"
+              className={
+                touched.confirmPassword && errors.confirmPassword
+                  ? "inputError"
+                  : touched.confirmPassword && !errors.confirmPassword
+                  ? "inputSuccess"
+                  : styles.createRole__input
+              }
+              value={values.confirmPassword}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
 
-        {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-          <div className="errorMessage">{formik.errors.confirmPassword}</div>
-        ) : null}
+            {touched.confirmPassword && errors.confirmPassword ? (
+              <div className="errorMessage">{errors.confirmPassword}</div>
+            ) : null}
 
-        <label htmlFor="role">Rol:</label>
-        <select
-          name="role"
-          className={styles.createRole__input}
-          value={formik.values.role}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        >
-          <option value={UserRole.USER}>{UserRole.USER}</option>
-          <option value={UserRole.ADMIN}>{UserRole.ADMIN}</option>
-        </select>
+            <label htmlFor="role">Rol:</label>
+            <select
+              name="role"
+              className={styles.createRole__input}
+              value={values.role}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            >
+              <option value={UserRole.USER}>{UserRole.USER}</option>
+              <option value={UserRole.ADMIN}>{UserRole.ADMIN}</option>
+            </select>
 
-        <div className="flex__spacingBetweenWrap">
-          <button type="submit" className={styles.createRole__btnCreateRole}>
-            Finalizar
-          </button>
+            <div className="flex__spacingBetweenWrap">
+              <button
+                type="submit"
+                className={styles.createRole__btnCreateRole}
+              >
+                Finalizar
+              </button>
 
-          <button
-            type="button"
-            className={styles.createRole__btnCancel}
-            onClick={() => navigate(-1)}
-          >
-            Cancelar
-          </button>
-        </div>
-      </form>
-    </section>
+              <button
+                type="button"
+                className={styles.createRole__btnCancel}
+                onClick={() => navigate(-1)}
+              >
+                Cancelar
+              </button>
+            </div>
+          </Form>
+        </section>
+      )}
+    </Formik>
   );
 }
