@@ -1,22 +1,29 @@
-import { client } from "../../../../api/apolloClient";
-import { IS_EMAIL_AVAILABLE } from "./query/isEmailAvailable";
+import { AUTH_API } from "../../../../context/helpers/api";
 
 export async function validateIsEmailAvailable(
-  email: string
+  email: string,
+  token: string
 ): Promise<boolean> {
   try {
-    const { data } = await client.query<
-      { isEmailAvailable: boolean },
-      { email: string }
-    >({
-      query: IS_EMAIL_AVAILABLE,
-      variables: { email },
-      fetchPolicy: "network-only",
+    const res = await fetch(AUTH_API.IS_EMAIL_AVAILABLE, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email }),
     });
 
-    return !!data?.isEmailAvailable;
+    if (!res.ok) {
+      return false;
+    }
+
+    const data = await res.json();
+
+
+    return data.message;
   } catch (error) {
     console.error("Error checking email availability:", error);
-    return false; // assume unavailable on error
+    return false;
   }
 }

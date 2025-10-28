@@ -2,27 +2,30 @@ import { MdDelete } from "react-icons/md";
 import styles from "../../CatalogueProducts.module.css";
 import { FaEdit } from "react-icons/fa";
 import type { ListProductCardDetailsProps } from "./interfaces/ListProductCardDetails";
-import { handleDelete } from "../../helpers/functions";
-import { useMutation } from "@apollo/client/react";
-import { DELETE_PRODUCT } from "../../../../api/mutation/deleteProduct";
+// import { handleDelete } from "../../helpers/functions";
+// import { useMutation } from "@apollo/client/react";
+// import { DELETE_PRODUCT } from "../../../../api/mutation/deleteProduct";
 import { useProductsProvider } from "../../../../hooks/useProductsProvider";
 import { useSessionProvider } from "../../../../hooks/useSessionProvider";
 import { UserRole } from "../../../../context/types/User";
+import { PRODUCT_API } from "../../../../context/helpers/api";
 
 export function ListProductCardDetails({
   product,
   setIsUpdatingProduct,
 }: ListProductCardDetailsProps) {
   const { setProducts } = useProductsProvider();
-  const { user } = useSessionProvider();
+  const { user, token } = useSessionProvider();
 
-  const [deleteProduct] = useMutation(DELETE_PRODUCT, {
-    variables: { id: product.id },
-    onCompleted: () => {
-      //?SETTED A STATE CUZ DUMMYJSON API DOESN'T DELETE THE ITEM
-      setProducts((prev) => prev.filter((pro) => pro.id !== product.id));
-    },
-  });
+  const handleDelete = async (id: number) => {
+    await fetch(PRODUCT_API.DELETE_PRODUCT(id), {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setProducts((prev) => prev.filter((pro) => pro.id !== id));
+  };
 
   return (
     <>
@@ -33,7 +36,7 @@ export function ListProductCardDetails({
           <>
             <MdDelete
               className={styles.CPW__delete}
-              onClick={() => handleDelete(product, deleteProduct)}
+              onClick={() => handleDelete(product.id)}
             />
             <FaEdit
               className={styles.CPW__edit}

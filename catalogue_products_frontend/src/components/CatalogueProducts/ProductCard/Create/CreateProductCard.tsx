@@ -3,61 +3,53 @@ import { useProductsProvider } from "../../../../hooks/useProductsProvider";
 import styles from "../../CatalogueProducts.module.css";
 import { productSchema } from "./formProps/schema/productSchema";
 
-import { CREATE_PRODUCT } from "../../../../api/mutation/createProduct";
-import { useMutation } from "@apollo/client/react";
+// import { CREATE_PRODUCT } from "../../../../api/mutation/createProduct";
+// import { useMutation } from "@apollo/client/react";
 import { useSessionProvider } from "../../../../hooks/useSessionProvider";
 import { UserRole } from "../../../../context/types/User";
+import { PRODUCT_API } from "../../../../context/helpers/api";
 
 export function CreateProductCard() {
-  const { setProducts, setIsCreating, products } = useProductsProvider();
-  const { user } = useSessionProvider();
+  const { setProducts, setIsCreating, productsLength } = useProductsProvider();
+  const { user, token } = useSessionProvider();
 
-  const [createProduct] = useMutation<{
-    createProduct: {
-      id: number;
-      title: string;
-      description: string;
-      price: number;
-      category: string;
-      thumbnail: string;
-    };
-  }>(CREATE_PRODUCT, {
-    onCompleted: (data) => {
-      setProducts((prev) => [
-        ...prev,
-        {
-          ...data.createProduct,
-          id: products.length + 1,
-        },
-      ]);
-    },
-  });
-
-  const handleCreate = (values: {
+  const handleCreate = async (values: {
     id: number;
     title: string;
     description: string;
     price: number;
     category: string;
   }) => {
-    createProduct({
-      variables: {
-        input: {
-          id: values.id,
-          title: values.title,
-          description: values.description,
-          price: values.price,
-          category: values.category,
-          thumbnail:
-            "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp",
-        },
+    const data = {
+      id: values.id,
+      title: values.title,
+      description: values.description,
+      price: values.price,
+      category: values.category,
+      thumbnail:
+        "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp",
+    };
+    await fetch(PRODUCT_API.CREATE_PRODUCT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
+
+      body: JSON.stringify(data),
     });
+
+    setProducts((prev) => [
+      {
+        ...data,
+      },
+      ...prev,
+    ]);
   };
 
   const formik = useFormik({
     initialValues: {
-      id: products.length + 1,
+      id: productsLength.current + 1,
       title: "",
       description: "",
       price: 0,
@@ -66,7 +58,12 @@ export function CreateProductCard() {
     validationSchema: productSchema,
     onSubmit: async (values, { resetForm }) => {
       if (user.role !== UserRole.ADMIN) return;
-      handleCreate(values);
+      try {
+        handleCreate(values);
+      } catch (error) {
+        console.error(error);
+        setIsCreating!(false);
+      }
       resetForm();
       alert("Producto creado con éxito!");
       setIsCreating!(false);

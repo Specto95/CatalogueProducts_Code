@@ -1,5 +1,5 @@
 import { object, string } from "yup";
-import { validateIsRegisteredEmail } from "./helpers/validateIsEmailUnavailable";
+import { validateIsEmailUnavailable } from "./helpers/validateIsEmailUnavailable";
 
 export const forgotPasswordSchema = object().shape({
   email: string()
@@ -8,7 +8,7 @@ export const forgotPasswordSchema = object().shape({
     .test("email-unique", "Correo no disponible", async function (value) {
       if (!value) return true;
 
-      const isRegistered = await validateIsRegisteredEmail(value);
+      const isRegistered = await validateIsEmailUnavailable(value);
       if (!isRegistered) {
         return this.createError({
           message: "Este correo no existe en el sistema",

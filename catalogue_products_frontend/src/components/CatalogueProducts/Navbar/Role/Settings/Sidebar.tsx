@@ -33,7 +33,7 @@ export function Sidebar({ setIsOpenOptions }: RoleSettingsProps) {
               size={35}
               className={styles.sidebar__addRoleIcon}
               onClick={() => {
-                navigate("/register");
+                navigate("/create-role");
                 setIsOpenOptions(false);
               }}
             />

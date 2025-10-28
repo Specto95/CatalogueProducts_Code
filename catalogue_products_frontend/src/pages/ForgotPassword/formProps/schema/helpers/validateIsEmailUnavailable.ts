@@ -1,20 +1,23 @@
-import { client } from "../../../../../api/apolloClient";
-import { IS_REGISTERED_EMAIL } from "./api/query/isRegisteredEmail";
+// import { client } from "../../../../../api/apolloClient";
+// import { IS_REGISTERED_EMAIL } from "./api/query/isRegisteredEmail";
 
-export async function validateIsRegisteredEmail(
+import { AUTH_API } from "../../../../../context/helpers/api";
+
+export async function validateIsEmailUnavailable(
   email: string
 ): Promise<boolean> {
   try {
-    const { data } = await client.query<
-      { isRegisteredEmail: boolean },
-      { email: string }
-    >({
-      query: IS_REGISTERED_EMAIL,
-      variables: { email },
-      fetchPolicy: "network-only",
+    const response = await fetch(AUTH_API.IS_REGISTERED_EMAIL, {
+      method: "POST",
+      body: JSON.stringify({email}),
+      headers: { "Content-Type": "application/json" },
     });
+    const data = await response.json();
 
-    return !!data?.isRegisteredEmail;
+    if (!response.ok) {
+      throw new Error(`NOT FOUND`);
+    }
+    return data.message || false;
   } catch (error) {
     console.error("Error checking email availability:", error);
     return false; // assume unavailable on error

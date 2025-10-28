@@ -1,19 +1,20 @@
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 import { UserRole, type User } from "./types/User";
-import { useMutation, useQuery } from "@apollo/client/react";
-import { IS_USER_AUTHENTICATED } from "./api/isUserAuthenticated";
-import { LOGIN } from "./api/login";
-
 import Cookies from "js-cookie";
-import { LOGOUT } from "./api/logout";
+import { AUTH_API } from "./helpers/api";
 
 type UserRoleEmail = Pick<User, "email" | "role">;
 
 type SessionContextType = {
   user: UserRoleEmail;
-  isUserLogged: boolean;
+  isUserLogged?: boolean;
   login: (email: string, password: string) => void;
   logout: () => void;
+  token: string | undefined;
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -30,37 +31,69 @@ export const SessionProvider = ({
     email: "",
     role: UserRole.NONE,
   });
+  const [isUserLogged, setIsUserLogged] = useState<boolean>(false);
   const token = Cookies.get("token");
 
-  const { data } = useQuery<{ isUserAuthenticated: boolean }>(
-    IS_USER_AUTHENTICATED,
-    {
-      variables: { token: token ?? "" },
-      skip: !token,
+  const isUserAuthenticated = async (token: string): Promise<boolean> => {
+    try {
+      if (!token) return false;
+      const res = await fetch(AUTH_API.IS_USER_AUTHENTICATED, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const isAuthenticated = await res.json();
+
+      if (isAuthenticated) {
+        return isAuthenticated;
+      }
+
+      setUser({} as User);
+      localStorage.removeItem("user");
+      Cookies.remove("token");
+
+      return false;
+    } catch (error) {
+      console.log(error);
+      return false;
     }
-  );
+  };
 
-  const [loginMutation] = useMutation<{
-    login: { user: User; message: string; token: string };
-  }>(LOGIN);
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!token){
+        setIsUserLogged(false);
+        return;
+      }
 
-  const [logoutMutation] = useMutation<{
-    logout: {
-      message: string;
+      const data = await isUserAuthenticated(token);
+      setIsUserLogged(data);
     };
-  }>(LOGOUT);
+
+    checkAuth();
+  }, [token]);
 
   const logout = async () => {
     try {
       if (!token || !Cookies.get("token")) {
         throw new Error("No token found");
       }
-      await logoutMutation({
-        variables: { token: token ?? Cookies.get("token") ?? "" },
+      const res = await fetch(AUTH_API.LOGOUT, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-      setUser({} as User);
-      localStorage.removeItem("user");
-      Cookies.remove("token");
+
+      if (res.ok) {
+        setUser({} as User);
+        localStorage.removeItem("user");
+        Cookies.remove("token");
+        return;
+      }
+      alert("Error trying to logout");
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -68,30 +101,45 @@ export const SessionProvider = ({
     }
   };
 
-  const isUserLogged = !!data?.isUserAuthenticated;
-
   const login = async (email: string, password: string) => {
     try {
-      const { data } = await loginMutation({ variables: { email, password } });
+      const res = await fetch(AUTH_API.LOGIN, {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      if (data?.login) {
-        setUser((({ email, role }) => ({ email, role }))(data.login.user));
-        localStorage.setItem("user", JSON.stringify(data.login.user));
-
-        Cookies.set("token", data.login.token, {
-          expires: 1,
-          secure: true,
-        });
+      const data = await res.json();
+      if (!res.ok) {
+        const errorMessage = data.message || `Error: ${res.status}`;
+        alert(errorMessage);
       }
+      setUser({
+        email: data.user.email,
+        role: data.user.role,
+      });
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      Cookies.set("token", data.token, {
+        expires: 1,
+        secure: true,
+      });
+
+      return;
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        // console.error(error.message);
       }
     }
   };
 
   useEffect(() => {
-    if (data?.isUserAuthenticated) {
+    if (isUserLogged) {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
@@ -99,7 +147,7 @@ export const SessionProvider = ({
     } else {
       setUser({} as User);
     }
-  }, [data]);
+  }, [isUserLogged]);
 
   return (
     <SessionContext.Provider
@@ -107,6 +155,7 @@ export const SessionProvider = ({
         user,
         login,
         isUserLogged,
+        token,
         logout,
       }}
     >
