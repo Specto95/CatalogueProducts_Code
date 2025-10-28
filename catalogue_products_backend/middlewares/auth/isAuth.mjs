@@ -1,8 +1,7 @@
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
+import { activeTokens } from "../../users.mjs";
 
-module.exports = (req, res, next) => {
-  const JWT_SECRET = "supersecretkey123";
-
+export const isAuth = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
     req.isAuth = false;
@@ -15,14 +14,17 @@ module.exports = (req, res, next) => {
     return next();
   }
 
-  let decodedToken;
-  try {
-    decodedToken = jwt.verify(bearerValue, JWT_SECRET);
-  } catch (err) {
+  if (!activeTokens.has(bearerValue)) {
     req.isAuth = false;
     return next();
   }
 
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(bearerValue, process.env.JWT_SECRET);
+  } catch (err) {
+  }
+  
   if (!decodedToken) {
     req.isAuth = false;
     return next();

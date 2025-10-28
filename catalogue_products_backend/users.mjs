@@ -1,6 +1,6 @@
-const bcrypt = require("bcryptjs");
+import bcrypt from 'bcryptjs';
 // users.js
-const users = [
+export const users = [
   {
     id: 1,
     email: "test@test.com",
@@ -9,6 +9,4 @@ const users = [
   },
 ];
 
-module.exports = {
-  users,
-};
+export const activeTokens = new Set();

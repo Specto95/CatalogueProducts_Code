@@ -1,0 +1,105 @@
+### REGISTER
+POST http://localhost:3000/auth/create-role
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjgwNjE0LCJleHAiOjE3NjE2ODQyMTR9.1-zPLxYWU9zUGgUrkoyzKGha12lYkKb7Io-EReM9dXI
+
+{
+    "email": "est@test.com",
+    "password": "Test1234!",
+    "role": "ADMIN"
+}
+
+### REGISTER TWO
+POST http://localhost:3000/auth/create-role
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjA3NTYyLCJleHAiOjE3NjE2MTExNjJ9.crsOduTr_5k3dSgXBbz27vo55gQc3KTjFIzFBIQXYEc
+
+{
+    "email": "enortizlo@gmail.com",
+    "password": "Test1234",
+    "role": "ADMIN"
+}
+
+### ISEMAILAVAILABLE
+POST http://localhost:3000/auth/is-email-available
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjgwNTU2LCJleHAiOjE3NjE2ODQxNTZ9.koDlz0hrB2zx-_hEof6uML4iwFo1he8-_sGTzXLf5R0
+
+{
+    "email": "enortizlo@gmail.com"
+}
+
+
+### LOGIN
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "enortizlo@gmail.com",
+    "password": "Test1234!"
+}
+
+### LOGIN (DEFAULT)
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "Test1234!"
+}
+
+### LOGOUT
+POST http://localhost:3000/auth/logout
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjM2MjgyLCJleHAiOjE3NjE2Mzk4ODJ9.MZG4VcEwlwVWm7qEIFQVaxZ2cOcSrKzcc9P5eZfT960
+
+### FORGOTPASSWORD
+POST http://localhost:3000/auth/forgot-password
+Content-Type: application/json
+
+{
+    "email": "test@test.com"
+}
+
+### RESETPASSWORD
+POST http://localhost:3000/auth/reset-password
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "newPassword": "Test1234!"
+}
+
+### CHANGEPASSWORD
+POST http://localhost:3000/auth/change-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjM4ODc4LCJleHAiOjE3NjE2NDI0Nzh9.XcTnETVsR7-bLJgM4iLLm9dN4M9ck_13xT4iy_uCjaM
+
+{
+    "email": "test@test.co",
+    "oldPassword": "test1234",
+    "newPassword": "Test1234!",
+    "confirmNewPassword": "Test1234!"
+}
+
+### IS-VALID-OLDPASSWORD
+POST http://localhost:3000/auth/is-valid-oldpassword
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjgwNjE0LCJleHAiOjE3NjE2ODQyMTR9.1-zPLxYWU9zUGgUrkoyzKGha12lYkKb7Io-EReM9dXI
+
+{
+    "email": "test@test.com",
+    "oldPassword": "Test1234!"
+}
+
+### ISREGISTEREDEMAIL
+POST http://localhost:3000/auth/is-registered-email
+Content-Type: application/json
+
+{
+    "email": "test@test.com"
+}
+
+### ISAUTHENTICATED
+POST http://localhost:3000/auth/is-user-authenticated
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjgwNjE0LCJleHAiOjE3NjE2ODQyMTR9.1-zPLxYWU9zUGgUrkoyzKGha12lYkKb7Io-EReM9dXI

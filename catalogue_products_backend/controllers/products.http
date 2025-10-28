@@ -1,0 +1,33 @@
+### LISTPRODUCTS
+GET http://localhost:3000/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjAxOTMzLCJleHAiOjE3NjE2MDU1MzN9.Y3R_03ZFJhSDOkPjRk8k283mKjMykrfkrweuCrzhI_g
+
+### CREATEPRODUCT
+POST http://localhost:3000/products
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjAyMDM3LCJleHAiOjE3NjE2MDU2Mzd9.vtHGXt1STSx5N00VUvLX8zeE6IKkENsDs8GBbvfMEyo
+
+{
+    "id" : 2,
+    "title": "tit",
+    "description": "descripcion",
+    "price": 20,
+    "category": "beauty",
+    "thumbnail": "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp"
+}
+
+### UPDATE PRODUCTS
+PATCH http://localhost:3000/products/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjAyNzg1LCJleHAiOjE3NjE2MDYzODV9.A3boEj6ckWHccpVtlAI9eCSSICwCYK7yhClOz6Zo0HE
+
+{
+    "title": "XXXXX",
+    "category": "beauty",
+    "thumbnail": "https://cdn.dummyjson.com/product-images/beauty/essence-mascara-lash-princess/thumbnail.webp"
+}
+
+### DELETE PRODUCTS
+DELETE http://localhost:3000/products/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjAzMzQxLCJleHAiOjE3NjE2MDY5NDF9.W6t-JIFVjbCPf_pUujS5NpJTUhMxJFpUMmTjrfCWOxM
