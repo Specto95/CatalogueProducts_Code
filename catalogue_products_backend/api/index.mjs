@@ -19,6 +19,10 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
+app.get('/', (_,res) => {
+  res.send('<h1>Bienvenido</h1>')
+})
+
 // PRODUCTS
 app.use("/auth", authRouter);
 app.use("/products", productsRouter);
