@@ -1,9 +1,9 @@
 import express from "express";
-import cors from "cors";
 import { createProductsRouter } from "./routes/products.mjs";
 import { createAuthRouter } from "./routes/auth.mjs";
 import { ProductModel } from "./models/product.mjs";
 import { AuthModel } from "./models/auth.mjs";
+import { corsMiddleware } from "./middlewares/cors.mjs";
 
 export const createApp = ({ productModel, authModel }) => {
   const app = express();
@@ -11,8 +11,7 @@ export const createApp = ({ productModel, authModel }) => {
 
   app.use(express.json());
 
-  app.use(cors());
-
+  app.use(corsMiddleware());
 
   app.get("/", (_, res) => {
     res.send("<h1>Bienvenido</h1>");
