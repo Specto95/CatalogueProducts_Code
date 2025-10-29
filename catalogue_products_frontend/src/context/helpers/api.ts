@@ -1,22 +1,21 @@
 // import { IS_USER_AUTHENTICATED } from "../api/isUserAuthenticated";
 
-export const DEV_API = "http://localhost:3000";
 
 export const AUTH_API = {
-  REGISTER: `${DEV_API}/auth/create-role`,
-  LOGIN: `${DEV_API}/auth/login`,
-  FORGOT_PASSWORD: `${DEV_API}/auth/forgot-password`,
-  IS_VALID_OLDPASSWORD: `${DEV_API}/auth/is-valid-oldpassword`,
-  CHANGE_PASSWORD: `${DEV_API}/auth/change-password`,
-  IS_REGISTERED_EMAIL: `${DEV_API}/auth/is-registered-email`,
-  IS_EMAIL_AVAILABLE: `${DEV_API}/auth/is-email-available`,
-  IS_USER_AUTHENTICATED: `${DEV_API}/auth/is-user-authenticated`,
-  LOGOUT: `${DEV_API}/auth/logout`,
+  REGISTER: `${import.meta.env.VITE_API_URL}/auth/create-role`,
+  LOGIN: `${import.meta.env.VITE_API_URL}/auth/login`,
+  FORGOT_PASSWORD: `${import.meta.env.VITE_API_URL}/auth/forgot-password`,
+  IS_VALID_OLDPASSWORD: `${import.meta.env.VITE_API_URL}/auth/is-valid-oldpassword`,
+  CHANGE_PASSWORD: `${import.meta.env.VITE_API_URL}/auth/change-password`,
+  IS_REGISTERED_EMAIL: `${import.meta.env.VITE_API_URL}/auth/is-registered-email`,
+  IS_EMAIL_AVAILABLE: `${import.meta.env.VITE_API_URL}/auth/is-email-available`,
+  IS_USER_AUTHENTICATED: `${import.meta.env.VITE_API_URL}/auth/is-user-authenticated`,
+  LOGOUT: `${import.meta.env.VITE_API_URL}/auth/logout`,
 };
 
 export const PRODUCT_API = {
-  LIST_PRODUCTS: `${DEV_API}/products`,
-  CREATE_PRODUCT: `${DEV_API}/products`,
-  UPDATE_PRODUCT: (id: number) => `${DEV_API}/products/${id}`,
-  DELETE_PRODUCT: (id: number) => `${DEV_API}/products/${id}`,
+  LIST_PRODUCTS: `${import.meta.env.VITE_API_URL}/products`,
+  CREATE_PRODUCT: `${import.meta.env.VITE_API_URL}/products`,
+  UPDATE_PRODUCT: (id: number) => `${import.meta.env.VITE_API_URL}/products/${id}`,
+  DELETE_PRODUCT: (id: number) => `${import.meta.env.VITE_API_URL}/products/${id}`,
 };
