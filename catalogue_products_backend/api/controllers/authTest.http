@@ -40,12 +40,12 @@ Content-Type: application/json
 }
 
 ### LOGIN (DEFAULT)
-POST https://catalogueproductsbackend-dfk5qm1ga-specto95s-projects.vercel.app/auth/login
+POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
     "email": "test@test.com",
-    "password": "Test1234!"
+    "password": "test1234"
 }
 
 ### LOGOUT

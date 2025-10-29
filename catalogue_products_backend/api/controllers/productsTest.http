@@ -1,7 +1,7 @@
 ### LISTPRODUCTS
 GET http://localhost:3000/products
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNjAxOTMzLCJleHAiOjE3NjE2MDU1MzN9.Y3R_03ZFJhSDOkPjRk8k283mKjMykrfkrweuCrzhI_g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNzYxNzE5MDcwLCJleHAiOjE3NjE3MjI2NzB9._GVlMh-ZHImPNdocUdt_C08omMvTGWW__p3oggZRQ1E
 
 ### CREATEPRODUCT
 POST http://localhost:3000/products

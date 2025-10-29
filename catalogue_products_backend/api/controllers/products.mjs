@@ -1,4 +1,3 @@
-import { ProductModel } from "../models/product.mjs";
 import {
   validateDeleteProductSchema,
   validatePartialProductSchema,
@@ -6,16 +5,17 @@ import {
 } from "./validations/productValidations.mjs";
 
 export class ProductController {
-  static async getAll(_, res) {
-    const products = await ProductModel.getAll();
-    res.status(200).json({
-      data: products,
-    });
+  constructor({ productModel }) {
+    this.productModel = productModel;
   }
 
-  static async create(req, res) {
+  getAll = async (_, res) => {
+    const products = await this.productModel.getAll();
+    res.status(200).json({ data: products });
+  };
+
+  create = async (req, res) => {
     const result = validateProductSchema(req.body);
-
     if (!result.success) {
       return res.status(422).json({
         message: JSON.parse(result.error.message),
@@ -23,15 +23,13 @@ export class ProductController {
       });
     }
 
-    const newProduct = await ProductModel.create({ input: result.data });
+    const newProduct = await this.productModel.create({ input: result.data });
     res.status(201).json({ data: newProduct });
-  }
+  };
 
-  static async update(req, res) {
+  update = async (req, res) => {
     const { id } = req.params;
-
     const result = validatePartialProductSchema(req.body);
-
     if (!result.success) {
       return res.status(422).json({
         message: JSON.parse(result.error.message),
@@ -39,20 +37,13 @@ export class ProductController {
       });
     }
 
-    const updateProduct = await ProductModel.update({
-      id,
-      input: result.data,
-    });
+    const updated = await this.productModel.update({ id, input: result.data });
+    res.status(200).json({ data: updated });
+  };
 
-    res.status(201).json({
-      data: updateProduct,
-    });
-  }
-
-  static async delete(req, res) {
+  delete = async (req, res) => {
     const { id } = req.params;
     const result = validateDeleteProductSchema({ id });
-
     if (!result.success) {
       return res.status(422).json({
         message: JSON.parse(result.error.message),
@@ -60,7 +51,7 @@ export class ProductController {
       });
     }
 
-    const deleteProduct = await ProductModel.delete({ id });
-    res.status(200).json({ data: deleteProduct });
-  }
+    const deleted = await this.productModel.delete({ id });
+    res.status(200).json({ data: deleted });
+  };
 }
