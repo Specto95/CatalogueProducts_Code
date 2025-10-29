@@ -3,10 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { getUserByEmail } from "../utils/user/user.mjs";
-// import {
-//   validateChangePassword,
-//   validateRegister,
-// } from "./validations/authValidations.mjs";
 
 export class AuthModel {
   static async createRole({ input }) {

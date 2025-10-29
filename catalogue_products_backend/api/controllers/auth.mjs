@@ -5,7 +5,11 @@ import {
 import { AuthModel } from "../models/auth.mjs";
 
 export class AuthController {
-  static async createRole(req, res) {
+  constructor({ authModel }) {
+    this.authModel = authModel;
+  }
+
+  createRole = async (req, res) => {
     const result = validateRegister(req.body);
 
     if (!result.success) {
@@ -27,9 +31,9 @@ export class AuthController {
         message: error.message || "Error al registrar usuario",
       });
     }
-  }
+  };
 
-  static async isEmailAvailable(req, res) {
+  isEmailAvailable = async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -45,9 +49,9 @@ export class AuthController {
         message: error.message || "Error al validar email",
       });
     }
-  }
+  };
 
-  static async login(req, res) {
+  login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -65,9 +69,9 @@ export class AuthController {
         message: error.message || "Error en el inicio de sesión",
       });
     }
-  }
+  };
 
-  static async logout(req, res) {
+  logout = async (req, res) => {
     const authHeader = req.get("Authorization");
     const token = authHeader.split(" ")[1];
 
@@ -81,9 +85,9 @@ export class AuthController {
         message: error.message || "Error al salir de sesión",
       });
     }
-  }
+  };
 
-  static async forgotPassword(req, res) {
+  forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -100,9 +104,9 @@ export class AuthController {
         message: error.message || "Error de recuperación contraseña",
       });
     }
-  }
+  };
 
-  static async isValidOldPassword(req, res) {
+  isValidOldPassword = async (req, res) => {
     try {
       const { oldPassword } = req.body;
       const user = req.foundUser;
@@ -120,9 +124,9 @@ export class AuthController {
         message: error.message || "Error al verificar contraseña antigua",
       });
     }
-  }
+  };
 
-  static async changePassword(req, res) {
+  changePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
     const user = req.foundUser;
     try {
@@ -154,9 +158,9 @@ export class AuthController {
         message: error.message || "Error al verificar contraseña antigua",
       });
     }
-  }
+  };
 
-  static async resetPassword(req, res) {
+  resetPassword = async (req, res) => {
     const { email, newPassword } = req.body;
 
     try {
@@ -173,17 +177,17 @@ export class AuthController {
         message: error.message || "Error al verificar contraseña antigua",
       });
     }
-  }
+  };
 
-  static async isUserAuthenticated(req, res) {
+  isUserAuthenticated = async (req, res) => {
     if (req.isAuth) {
       res.status(200).send(true);
       return;
     }
     res.status(401).send(false);
-  }
+  };
 
-  static async isRegisteredEmail(req, res) {
+  isRegisteredEmail = async (req, res) => {
     const { email } = req.body;
     try {
       const isRegisteredEmailResult = await AuthModel.isRegisteredEmail({
@@ -197,5 +201,5 @@ export class AuthController {
         message: error.message || "Error al verificar contraseña antigua",
       });
     }
-  }
+  };
 }

@@ -4,31 +4,29 @@ import cors from "cors";
 //const { graphqlHTTP } = require("express-graphql");
 //const { schema, rootValue } = require("./schema/schema");
 
-import { corsMiddleware } from "./middlewares/cors.mjs";
-import { productsRouter } from "./routes/products.mjs";
-import { authRouter } from "./routes/auth.mjs";
+// import { corsMiddleware } from "./middlewares/cors.mjs";
+import { createProductsRouter } from "./routes/products.mjs";
+import { createAuthRouter } from "./routes/auth.mjs";
 
-const app = express();
-{
-}
-app.disable("x-powered-by");
+export const createApp = ({ productModel, authModel }) => {
+  const app = express();
+  app.disable("x-powered-by");
 
-app.use(express.json());
+  app.use(express.json());
 
-app.use(cors());
+  app.use(cors());
 
-const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3000;
 
-app.get('/', (_,res) => {
-  res.send('<h1>Bienvenido</h1>')
-})
+  app.get("/", (_, res) => {
+    res.send("<h1>Bienvenido</h1>");
+  });
 
-// PRODUCTS
-app.use("/auth", authRouter);
-app.use("/products", productsRouter);
+  // PRODUCTS
+  app.use("/auth", createAuthRouter({ authModel }));
+  app.use("/products", createProductsRouter({ productModel }));
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-export default app;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
