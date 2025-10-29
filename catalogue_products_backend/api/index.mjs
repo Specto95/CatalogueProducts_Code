@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import { createProductsRouter } from "./routes/products.mjs";
 import { createAuthRouter } from "./routes/auth.mjs";
+import { ProductModel } from "./models/product.mjs";
+import { AuthModel } from "./models/auth.mjs";
 
 export const createApp = ({ productModel, authModel }) => {
   const app = express();
